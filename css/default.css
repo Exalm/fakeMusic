@@ -13,7 +13,8 @@ body {
         font-family: "Roboto", sans-serif;
 }
 
-.track-title    {
+.track-title,
+#track-title {
     font-size: 32px;
     margin-bottom: 8px;
     font-weight: 400;
@@ -32,4 +33,5 @@ body {
 .repeat-modal-text  {
     font-weight: 400;
     font-size: 16px;
+
 }
