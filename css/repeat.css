@@ -1,0 +1,32 @@
+.repeat-container {
+    margin-top: 1002px; /* отступ сверху - сдвиг вниз */
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* между кнопками */
+}
+
+
+.repeat-btn {
+    width: 32px;           /* уменьшенный размер по ширине */
+    height: 32px;          /* уменьшенный размер по высоте */
+    padding: 0;            /* убрать внутренние отступы */
+    background: transparent; /* Прозрачный фон */
+    border: none;
+    border-radius: 50%;    /* круглая кнопка */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(68,58,145,0.3);
+    transition: background 0.2s, color 0.2s;
+    margin: 0 15px;
+}
+
+
+.repeat-btn svg {
+    width: 16px;           /* уменьшенный размер самого SVG */
+    height: 16px;
+    display: block;        /* убрать лишние отступы вокруг SVG */
+}
+
+

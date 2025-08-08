@@ -1,0 +1,35 @@
+        @media (max-width: 500px) {
+            body {
+                background-attachment: scroll;
+            }
+            .player-container {
+                width: 95vw;
+                max-width: 400px;
+                padding: 24px 10px;
+            }
+            .album-art {
+                width: 60vw;
+                max-width: 180px;
+                height: 60vw;
+                max-height: 180px;
+                margin-bottom: 16px;
+            }
+            .track-info {
+                margin-bottom: 15px;
+                font-size: 1.05em;
+            }
+            .progress-bar {
+                margin-bottom: 16px;
+            }
+            .btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .controls {
+                gap: 18px;
+            }
+            .time-info {
+                font-size: 0.90em;
+            }
+        }

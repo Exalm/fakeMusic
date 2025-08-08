@@ -1,0 +1,84 @@
+.progress-bar {
+    width: 100%;
+    margin-bottom: 18px;
+    user-select: none;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #fafcff 0%, #665de9 100%);
+    border-radius: 6px;
+    width: 0%;
+    pointer-events: none;
+    will-change: width;
+    position: relative;
+    z-index: 2; /* выше следа */
+}
+
+.progress-trail {
+    position: absolute;
+    height: 100%;
+    background: linear-gradient(90deg, #e7ddff 0%, #7f5cff 100%); /* Яркий градиент */
+    border-radius: 6px;
+    width: 0%;
+    pointer-events: none;
+    z-index: 1;
+    box-shadow: 0 2px 12px 0 rgba(127,92,255,0.18); /* Добавляет светящееся свечение */
+    opacity: 0.95; /* Сделать почти непрозрачным */
+}
+
+
+.progress-container {
+    width: 100%;
+    height: 9px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 6px;
+    position: relative;
+    cursor: pointer;
+}
+
+
+.progress-thumb {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2.5px solid #443a91;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 1.5px 7px 0 rgba(50,32,120,0.13);
+    transition: background 0.16s, border 0.14s;
+    pointer-events: all;
+    touch-action: none;
+}
+.progress-thumb:active {
+    background: #f3f2fc;
+    border-color: #8877ee;
+}
+.time-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.98em;
+    color: #e9e7ff;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    opacity: 0.85;
+}
+@media (max-width: 500px) {
+    .progress-bar {
+        margin-bottom: 14px;
+    }
+    .progress-thumb {
+        width: 15px;
+        height: 15px;
+    }
+    .progress-container {
+        height: 7px;
+    }
+    .time-info {
+        font-size: 0.90em;
+    }
+}
