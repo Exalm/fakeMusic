@@ -123,23 +123,25 @@
     </div>
 
     <!-- Модальное окно админ-панели -->
-    <div
+<div
         id="repeat-modal"
         class="modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="repeat-modal-title"
-        style="display: none;"
-    >
+        style="display: none;">
         <div class="modal-content" tabindex="0">
             <h2 id="repeat-modal-title" class="repeat-modal-title">Панель Администратора</h2>
             <p class="repeat-modal-text">Выберите состояние повтора:</p>
             <button id="name-author-btn" type="button">Имя автора</button>
             <button id="name-music-btn" type="button">Название песни</button>
             <button id="img-btn" type="button">Изменить картинку</button>
+            <button id="change-time-btn" type="button">Изменить время трека</button>
+            <div id="time-input-container"></div>
             <button id="repeat-modal-close" aria-label="Закрыть окно" type="button">Закрыть</button>
         </div>
     </div>
+
 
     <!-- Скрытый input для загрузки изображения -->
     <input
