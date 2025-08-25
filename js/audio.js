@@ -7,27 +7,38 @@ const currentTimeElem = document.getElementById('current-time');
 const durationElem = document.getElementById('duration');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
+const trackTitleElem = document.getElementById('track-title');
+const trackArtistElem = document.querySelector('.track-artist');
+const albumImageElem = document.querySelector('.album-art');
+
+// Ключи для localStorage
+const STORAGE_KEYS = {
+  duration: 'playerDuration',
+  trackTitle: 'playerTrackTitle',
+  trackArtist: 'playerTrackArtist',
+  albumImage: 'playerAlbumImage'
+};
 
 // Переменные плеера
-let duration = 201; // длительность в секундах
+let duration = 201;
 let currentTime = 0;
 let playing = false;
 let intervalId = null;
 let dragging = false;
 
-// Формат времени (мин:сек или час:мин:сек для отображения)
+// Функция форматирования времени
 function formatTime(sec) {
   const h = Math.floor(sec / 3600);
   const m = Math.floor((sec % 3600) / 60);
   const s = Math.floor(sec % 60);
-  if(h > 0) {
+  if (h > 0) {
     return h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
   } else {
     return m + ':' + String(s).padStart(2, '0');
   }
 }
 
-// Обновление UI плеера
+// Обновление интерфейса
 function updateUI() {
   const percent = currentTime / duration;
   progress.style.transform = `scaleX(${percent})`;
@@ -37,7 +48,7 @@ function updateUI() {
   progressBar.setAttribute('aria-valuenow', Math.floor(percent * 100));
 }
 
-// Установка прогресса от события (клик, drag)
+// Установка прогресса от событий
 function setProgressFromEvent(e) {
   const rect = progressBar.getBoundingClientRect();
   let clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -47,7 +58,7 @@ function setProgressFromEvent(e) {
   updateUI();
 }
 
-// Управление кнопкой Play/Pause
+// Управление кнопкой воспроизведения
 playBtn.addEventListener('click', () => {
   if (!playing) {
     playing = true;
@@ -82,7 +93,7 @@ playBtn.addEventListener('click', () => {
   }
 });
 
-// Обработка drag событий
+// Обработка drag и touch для прогресс-бара
 progressBar.addEventListener('mousedown', e => {
   dragging = true;
   setProgressFromEvent(e);
@@ -120,7 +131,7 @@ progressBar.addEventListener('click', e => {
   setProgressFromEvent(e);
 });
 
-// Кнопки предыдущий/следующий
+// Кнопки Previous/Next
 prevBtn.addEventListener('click', () => {
   currentTime = 0;
   updateUI();
@@ -130,7 +141,7 @@ nextBtn.addEventListener('click', () => {
   updateUI();
 });
 
-// Управление клавиатурой (стрелки)
+// Управление клавиатурой
 progressBar.addEventListener('keydown', e => {
   const step = 5;
   if (e.key === 'ArrowRight' || e.key === 'Right') {
@@ -144,10 +155,44 @@ progressBar.addEventListener('keydown', e => {
   }
 });
 
-// Инициализация UI
-updateUI();
+// Функции сохранения в локальном хранилище
+function saveDuration(seconds) {
+  localStorage.setItem(STORAGE_KEYS.duration, seconds.toString());
+}
+function saveTrackTitle(title) {
+  localStorage.setItem(STORAGE_KEYS.trackTitle, title);
+}
+function saveTrackArtist(artist) {
+  localStorage.setItem(STORAGE_KEYS.trackArtist, artist);
+}
+function saveAlbumImage(src) {
+  localStorage.setItem(STORAGE_KEYS.albumImage, src);
+}
 
-// Кнопка изменения времени и поле ввода
+// Восстановление данных при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+  const savedDuration = localStorage.getItem(STORAGE_KEYS.duration);
+  const savedTitle = localStorage.getItem(STORAGE_KEYS.trackTitle);
+  const savedArtist = localStorage.getItem(STORAGE_KEYS.trackArtist);
+  const savedImage = localStorage.getItem(STORAGE_KEYS.albumImage);
+
+  if (savedDuration) {
+    duration = parseInt(savedDuration, 10);
+  }
+  if (savedTitle) {
+    trackTitleElem.textContent = savedTitle;
+  }
+  if (savedArtist) {
+    trackArtistElem.textContent = savedArtist;
+  }
+  if (savedImage) {
+    albumImageElem.src = savedImage;
+  }
+
+  updateUI();
+});
+
+// Кнопка изменения времени и поля ввода
 const changeTimeBtn = document.getElementById('change-time-btn');
 const timeInputContainer = document.createElement('div');
 
@@ -175,7 +220,6 @@ changeTimeBtn.addEventListener('click', () => {
   submitBtn.addEventListener('click', () => {
     const val = input.value.trim();
 
-    // Проверяем форматы: "чч:мм:сс" или "мм:сс"
     const timeParts = val.split(':');
     if (
       (timeParts.length === 2 || timeParts.length === 3) &&
@@ -184,7 +228,6 @@ changeTimeBtn.addEventListener('click', () => {
       let totalSeconds = 0;
 
       if (timeParts.length === 2) {
-        // мм:сс
         const minutes = parseInt(timeParts[0], 10);
         const seconds = parseInt(timeParts[1], 10);
         if (seconds >= 60) {
@@ -194,7 +237,6 @@ changeTimeBtn.addEventListener('click', () => {
         }
         totalSeconds = minutes * 60 + seconds;
       } else {
-        // чч:мм:сс
         const hours = parseInt(timeParts[0], 10);
         const minutes = parseInt(timeParts[1], 10);
         const seconds = parseInt(timeParts[2], 10);
@@ -206,10 +248,9 @@ changeTimeBtn.addEventListener('click', () => {
         totalSeconds = hours * 3600 + minutes * 60 + seconds;
       }
 
-      // Обновляем длительность
       duration = totalSeconds;
+      saveDuration(totalSeconds); // Сохраняем в localStorage
 
-      // Коррекция текущего времени
       if (currentTime > duration) currentTime = 0;
 
       updateUI();
