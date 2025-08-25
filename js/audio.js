@@ -9,17 +9,22 @@ const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
 
 // Переменные плеера
-let duration = 201; // длительность в секундах (пример)
+let duration = 201; // длительность в секундах
 let currentTime = 0;
 let playing = false;
 let intervalId = null;
-let dragging = false; // для drag управления
+let dragging = false;
 
-// Формат времени
+// Формат времени (мин:сек или час:мин:сек для отображения)
 function formatTime(sec) {
-  const m = Math.floor(sec / 60);
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
   const s = Math.floor(sec % 60);
-  return m + ':' + String(s).padStart(2, '0');
+  if(h > 0) {
+    return h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  } else {
+    return m + ':' + String(s).padStart(2, '0');
+  }
 }
 
 // Обновление UI плеера
@@ -77,7 +82,7 @@ playBtn.addEventListener('click', () => {
   }
 });
 
-// Обработка drag мышью и touch для прогресс-бара
+// Обработка drag событий
 progressBar.addEventListener('mousedown', e => {
   dragging = true;
   setProgressFromEvent(e);
@@ -115,7 +120,7 @@ progressBar.addEventListener('click', e => {
   setProgressFromEvent(e);
 });
 
-// Заглушки кнопок
+// Кнопки предыдущий/следующий
 prevBtn.addEventListener('click', () => {
   currentTime = 0;
   updateUI();
@@ -125,7 +130,7 @@ nextBtn.addEventListener('click', () => {
   updateUI();
 });
 
-// Клавиатурное управление прогрессом
+// Управление клавиатурой (стрелки)
 progressBar.addEventListener('keydown', e => {
   const step = 5;
   if (e.key === 'ArrowRight' || e.key === 'Right') {
@@ -139,10 +144,10 @@ progressBar.addEventListener('keydown', e => {
   }
 });
 
-// Инициализация
+// Инициализация UI
 updateUI();
 
-// Кнопка для изменения времени трека и поле для ввода
+// Кнопка изменения времени и поле ввода
 const changeTimeBtn = document.getElementById('change-time-btn');
 const timeInputContainer = document.createElement('div');
 
@@ -152,9 +157,9 @@ changeTimeBtn.addEventListener('click', () => {
   const input = document.createElement('input');
   input.type = 'text';
   input.id = 'new-time-input';
-  input.placeholder = 'Введите новое время (мин:сек)';
+  input.placeholder = 'Введите время (чч:мм:сс или мм:сс)';
   input.style.marginLeft = '10px';
-  input.style.width = '110px';
+  input.style.width = '140px';
 
   const submitBtn = document.createElement('button');
   submitBtn.textContent = 'Сохранить';
@@ -170,27 +175,48 @@ changeTimeBtn.addEventListener('click', () => {
   submitBtn.addEventListener('click', () => {
     const val = input.value.trim();
 
-    if (/^\d{1,2}:\d{2}$/.test(val)) {
-      const [minutesStr, secondsStr] = val.split(':');
-      const minutes = parseInt(minutesStr, 10);
-      const seconds = parseInt(secondsStr, 10);
+    // Проверяем форматы: "чч:мм:сс" или "мм:сс"
+    const timeParts = val.split(':');
+    if (
+      (timeParts.length === 2 || timeParts.length === 3) &&
+      timeParts.every(part => /^\d{1,2}$/.test(part))
+    ) {
+      let totalSeconds = 0;
 
-      if (seconds >= 60) {
-        alert('Секунды должны быть меньше 60');
-        input.focus();
-        return;
+      if (timeParts.length === 2) {
+        // мм:сс
+        const minutes = parseInt(timeParts[0], 10);
+        const seconds = parseInt(timeParts[1], 10);
+        if (seconds >= 60) {
+          alert('Секунды должны быть меньше 60');
+          input.focus();
+          return;
+        }
+        totalSeconds = minutes * 60 + seconds;
+      } else {
+        // чч:мм:сс
+        const hours = parseInt(timeParts[0], 10);
+        const minutes = parseInt(timeParts[1], 10);
+        const seconds = parseInt(timeParts[2], 10);
+        if (minutes >= 60 || seconds >= 60) {
+          alert('Минуты и секунды должны быть меньше 60');
+          input.focus();
+          return;
+        }
+        totalSeconds = hours * 3600 + minutes * 60 + seconds;
       }
 
-      // Перевод в секунды и обновление переменной duration
-      duration = minutes * 60 + seconds;
+      // Обновляем длительность
+      duration = totalSeconds;
 
+      // Коррекция текущего времени
       if (currentTime > duration) currentTime = 0;
 
       updateUI();
 
       timeInputContainer.innerHTML = '';
     } else {
-      alert('Введите время в формате мин:сек, например 3:45');
+      alert('Введите время в формате чч:мм:сс или мм:сс, например 01:15:30 или 3:45');
       input.focus();
     }
   });
