@@ -9,7 +9,7 @@ document.getElementById('name-author-btn').addEventListener('click', () => {
   input.type = 'text';
   input.id = 'author-input';
   input.value = currentArtist;
-  input.classList.add('custom-input');   // применение стиля
+  input.classList.add('custom-input');
   input.style.boxSizing = 'border-box';
 
   trackArtistElem.textContent = '';
@@ -19,6 +19,9 @@ document.getElementById('name-author-btn').addEventListener('click', () => {
   function saveAndRemoveInput() {
     const newArtist = input.value.trim() || 'Имя исполнителя';
     trackArtistElem.textContent = newArtist;
+
+    // Сохраняем в localStorage
+    localStorage.setItem('playerTrackArtist', newArtist);
   }
 
   input.addEventListener('blur', () => {
@@ -31,4 +34,13 @@ document.getElementById('name-author-btn').addEventListener('click', () => {
       input.blur();
     }
   });
+});
+
+// При загрузке страницы восстанавливаем исполнителя из localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  const savedArtist = localStorage.getItem('playerTrackArtist');
+  const trackArtistElem = document.querySelector('.track-artist');
+  if (savedArtist) {
+    trackArtistElem.textContent = savedArtist;
+  }
 });
