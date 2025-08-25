@@ -1,10 +1,10 @@
 document.getElementById('name-music-btn').addEventListener('click', () => {
   const trackTitleElem = document.querySelector('.track-title');
 
-  // Если поле уже показано — не создавать новое
+  // Если поле ввода уже показано, ничего не делать
   if (document.getElementById('music-input')) return;
 
-  // Текущее название песни
+  // Текущее название трека
   const currentTitle = trackTitleElem.textContent;
 
   // Создаём input
@@ -12,30 +12,39 @@ document.getElementById('name-music-btn').addEventListener('click', () => {
   input.type = 'text';
   input.id = 'music-input';
   input.value = currentTitle;
-  input.classList.add('custom-input');  // если есть стили, аналогичные для автора
+  input.classList.add('custom-input');  // примените нужные стили
   input.style.boxSizing = 'border-box';
 
-  // Заменяем текст на input
+  // Заменяем текст заголовка на input
   trackTitleElem.textContent = '';
   trackTitleElem.appendChild(input);
   input.focus();
 
-  // Функция сохранения и удаления поля ввода
   function saveAndRemoveInput() {
     const newTitle = input.value.trim() || 'Название трека';
     trackTitleElem.textContent = newTitle;
+
+    // Сохраняем в localStorage
+    localStorage.setItem('playerTrackTitle', newTitle);
   }
 
-  // При потере фокуса сохраняем введённое
   input.addEventListener('blur', () => {
     saveAndRemoveInput();
   });
 
-  // При нажатии Enter сохраняем и убираем фокус
-  input.addEventListener('keydown', e => {
+  input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       input.blur();
     }
   });
+});
+
+// При загрузке страницы восстанавливаем название трека
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTitle = localStorage.getItem('playerTrackTitle');
+  const trackTitleElem = document.querySelector('.track-title');
+  if (savedTitle) {
+    trackTitleElem.textContent = savedTitle;
+  }
 });
