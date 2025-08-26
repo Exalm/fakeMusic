@@ -65,7 +65,7 @@ playBtn.addEventListener('click', () => {
     playBtn.classList.remove('play');
     playBtn.classList.add('playing');
     playBtn.setAttribute('aria-label', 'Пауза');
-    playBtn.innerHTML = '&#10074;&#10074;';
+    playBtn.innerHTML = '';
     intervalId = setInterval(() => {
       if (!dragging) {
         if (currentTime < duration) {
@@ -77,7 +77,7 @@ playBtn.addEventListener('click', () => {
           playBtn.classList.remove('playing');
           playBtn.classList.add('play');
           playBtn.setAttribute('aria-label', 'Воспроизвести');
-          playBtn.innerHTML = '&#9654;';
+          playBtn.innerHTML = '';
           currentTime = 0;
           updateUI();
         }
@@ -88,7 +88,7 @@ playBtn.addEventListener('click', () => {
     playBtn.classList.remove('playing');
     playBtn.classList.add('play');
     playBtn.setAttribute('aria-label', 'Воспроизвести');
-    playBtn.innerHTML = '&#9654;';
+    playBtn.innerHTML = '';
     clearInterval(intervalId);
   }
 });
@@ -262,3 +262,4 @@ changeTimeBtn.addEventListener('click', () => {
     }
   });
 });
+
