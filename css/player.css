@@ -69,4 +69,10 @@
         }
         .btn:hover {
             background: #f0f0f0;
+
+        }
+
+        #next-btn,
+        #prev-btn   {
+            display: none;
         }
